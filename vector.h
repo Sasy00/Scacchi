@@ -5,20 +5,65 @@ template<class T>
 class Vector
 {
 public:
+    /**
+     * @brief Constructor for class Vector
+     * @param x: initial size of the vector
+     */
+
     Vector(int x = 10);
     ~Vector();
 
-    Vector &operator=(const Vector&);
+    /**
+     * @brief assignment operator
+     * @param o: source vector
+     * @return this vector as reference
+     */
+    Vector &operator=(const Vector& o);
+
+    /**
+     * @brief Copy constructor
+     */
     Vector(const Vector&);
 
-    T & operator[](int);
+    /**
+     * @brief operator []
+     * @param n: index
+     * @return reference to the n-th element of the vector
+     */
+    T & operator[](int n) const;
 
-    void pushBack(const T &);
+    /**
+     * @brief inserts a copy of the argument at the end of the vector
+     * @param o: element to be inserted
+     */
+    void pushBack(const T &o);
+
+    /**
+     * @brief deletes the last element of the vector without returning it. to have a copy of the last element use Vector::last()
+     */
     void popBack();
-    T& last();
-    void remove(int);
 
+    /**
+     * @brief last
+     * @return reference to the last element of the vector
+     */
+    T& last() const;
+
+    /**
+     * @brief removes the n-th element of the vector and moves back by one all the next elements
+     */
+    void remove(int n);
+
+    /**
+     * @brief size
+     * @return the number of elements inside the vector
+     */
     inline int size() const {return _size;}
+
+    /**
+     * @brief capacity
+     * @return size + free space already allocated
+     */
     inline int capacity() const {return _capacity;}
 
 private:
@@ -60,7 +105,7 @@ Vector<T>::Vector(const Vector<T> &o)
 }
 
 template<class T>
-T & Vector<T>::operator[](int x)
+T & Vector<T>::operator[](int x) const
 {
     return *(_arr[x]);
 }
@@ -107,7 +152,7 @@ void Vector<T>::popBack()
 }
 
 template<class T>
-T & Vector<T>::last()
+T & Vector<T>::last() const
 {
     return *_arr[_size - 1];
 }
@@ -129,7 +174,5 @@ Vector<T> & Vector<T>::operator=(const Vector<T> &o)
     }
     return *this;
 }
-
-
 
 #endif // VECTOR_H
