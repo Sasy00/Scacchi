@@ -5,7 +5,7 @@ template<class T>
 class Vector
 {
 public:
-    Vector(int, const T &);
+    Vector(unsigned int x = 10);
     ~Vector();
 
     T & operator[](int);
