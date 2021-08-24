@@ -8,6 +8,9 @@ public:
     Vector(int x = 10);
     ~Vector();
 
+    Vector &operator=(const Vector&);
+    Vector(const Vector&);
+
     T & operator[](int);
 
     void pushBack(const T &);
@@ -40,6 +43,20 @@ Vector<T>::~Vector()
         delete _arr[i];
     }
     delete[] _arr;
+}
+
+template<class T>
+Vector<T>::Vector(const Vector<T> &o)
+    :_arr(new T*[o._capacity])
+    ,_size(0)
+    ,_capacity(o._capacity)
+
+{
+    int fin = o.size();
+    for(int i = 0; i < fin; ++i)
+    {
+        pushBack(o[i]);
+    }
 }
 
 template<class T>
@@ -94,5 +111,25 @@ T & Vector<T>::last()
 {
     return *_arr[_size - 1];
 }
+
+template<class T>
+Vector<T> & Vector<T>::operator=(const Vector<T> &o)
+{
+    for(int i = 0; i < _size; ++i)
+    {
+        delete _arr[i];
+    }
+
+    _size = 0;
+
+    int fin = o.size();
+    for(int i = 0; i < fin; ++i)
+    {
+        pushBack(o[i]);
+    }
+    return *this;
+}
+
+
 
 #endif // VECTOR_H
