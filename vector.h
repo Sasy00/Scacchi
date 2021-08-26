@@ -160,6 +160,9 @@ T & Vector<T>::last() const
 template<class T>
 Vector<T> & Vector<T>::operator=(const Vector<T> &o)
 {
+    if(this == &o)
+        return *this;
+
     for(int i = 0; i < _size; ++i)
     {
         delete _arr[i];
