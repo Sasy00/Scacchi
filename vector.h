@@ -11,6 +11,7 @@ public:
      */
 
     Vector(int x = 10);
+    Vector(int x, const T &o);
     ~Vector();
 
     /**
@@ -80,6 +81,20 @@ Vector<T>::Vector(int x)
 {
 
 }
+
+template<class T>
+Vector<T>::Vector(int x, const T &o)
+    : _arr(x == 0 ? new T*[10] : new T*[x])
+    , _size(x),
+      _capacity(x == 0 ? 10 : x)
+{
+    for(int i = 0; i < x; ++i)
+    {
+        _arr[i] = new T(o);
+    }
+}
+
+
 template<class T>
 Vector<T>::~Vector()
 {
