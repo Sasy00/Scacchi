@@ -10,12 +10,16 @@ CONFIG += c++11
 
 SOURCES += \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    pezzo.cpp \
+    scacchiera.cpp
 
 HEADERS += \
     coppia.h \
     deepptr.h \
     mainwindow.h \
+    pezzo.h \
+    scacchiera.h \
     vector.h
 
 FORMS += \
