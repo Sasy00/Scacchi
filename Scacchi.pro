@@ -13,6 +13,7 @@ SOURCES += \
     mainwindow.cpp
 
 HEADERS += \
+    coppia.h \
     deepptr.h \
     mainwindow.h \
     vector.h
