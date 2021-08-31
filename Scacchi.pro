@@ -9,17 +9,29 @@ CONFIG += c++11
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
+    alfiere.cpp \
+    cavallo.cpp \
+    donna.cpp \
     main.cpp \
     mainwindow.cpp \
+    pedone.cpp \
     pezzo.cpp \
-    scacchiera.cpp
+    re.cpp \
+    scacchiera.cpp \
+    torre.cpp
 
 HEADERS += \
+    alfiere.h \
+    cavallo.h \
     coppia.h \
     deepptr.h \
+    donna.h \
     mainwindow.h \
+    pedone.h \
     pezzo.h \
+    re.h \
     scacchiera.h \
+    torre.h \
     vector.h
 
 FORMS += \
