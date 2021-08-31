@@ -1,7 +1,7 @@
 #include "re.h"
 
-Re::Re(const Scacchiera *owner, bool x, const Coppia<int> &y, char z)
-    : Pezzo(owner, x, y, z)
+Re::Re(const Scacchiera *owner, bool x, const Coppia<int> &y)
+    : Pezzo(owner, x, y, x ? 'R' : 'r')
     , moved(false)
 {
 
