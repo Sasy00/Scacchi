@@ -6,7 +6,7 @@
 class Alfiere : public Pezzo
 {
 public:
-    Alfiere();
+    Alfiere(const Scacchiera *owner, bool x, const Coppia<int> &y, char z);
     virtual Vector<Coppia<int>>canMove(int row, int col) override;
 };
 

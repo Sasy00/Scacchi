@@ -6,7 +6,7 @@
 class Torre : public Pezzo
 {
 public:
-    Torre();
+    Torre(const Scacchiera *owner, bool x, const Coppia<int> &y, char z);
     virtual Vector<Coppia<int>>canMove(int row, int col) override;
 private:
     bool moved;
