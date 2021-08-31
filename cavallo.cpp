@@ -1,7 +1,7 @@
 #include "cavallo.h"
 
-Cavallo::Cavallo(const Scacchiera *owner, bool x, const Coppia<int> &y, char z)
-    :Pezzo(owner, x, y, z)
+Cavallo::Cavallo(const Scacchiera *owner, bool x, const Coppia<int> &y)
+    :Pezzo(owner, x, y, x ? 'C' : 'c')
 {
 
 }

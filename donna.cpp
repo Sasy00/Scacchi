@@ -1,7 +1,7 @@
 #include "donna.h"
 
-Donna::Donna(const Scacchiera *owner, bool x, const Coppia<int> &y, char z)
-    :Pezzo(owner, x, y, z)
+Donna::Donna(const Scacchiera *owner, bool x, const Coppia<int> &y)
+    :Pezzo(owner, x, y, x ? 'D' : 'd')
 {
 
 }

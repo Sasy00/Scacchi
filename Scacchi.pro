@@ -21,6 +21,7 @@ SOURCES += \
     torre.cpp
 
 HEADERS += \
+    TuttiPezzi.h \
     alfiere.h \
     cavallo.h \
     coppia.h \
