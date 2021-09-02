@@ -33,7 +33,7 @@ DeepPtr<T>::~DeepPtr()
 
 template <class T>
 DeepPtr<T>::DeepPtr(const DeepPtr &o):
-    ptr(o.ptr ? ptr = new T(*(o.ptr)) : nullptr)
+    ptr(o.ptr ? new T(*(o.ptr)) : nullptr)
 {
 
 }

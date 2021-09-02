@@ -24,7 +24,6 @@ HEADERS += \
     TuttiPezzi.h \
     alfiere.h \
     cavallo.h \
-    coppia.h \
     deepptr.h \
     donna.h \
     mainwindow.h \

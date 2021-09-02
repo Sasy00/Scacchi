@@ -2,7 +2,7 @@
 #define PEZZO_H
 
 #include "vector.h"
-#include "coppia.h"
+#include <utility>
 
 //forward declaration
 class Scacchiera;
@@ -10,17 +10,25 @@ class Scacchiera;
 class Pezzo
 {
 public:
-    Pezzo(const Scacchiera *owner, bool x, const Coppia<int> &y, char z);
+    Pezzo(const Scacchiera *owner, bool x, const std::pair<int, int> &y, char z);
     virtual ~Pezzo();
-    virtual Vector<Coppia<int>> canMove(int row, int col) = 0;
+    virtual Vector<std::pair<int, int>> canMove(int row, int col) = 0;
 
     bool getIsWhite() const;
-    Coppia<int> getPosition() const;
+    std::pair<int, int> getPosition() const;
     char getRepr() const;
-private:
+protected:
+    /**
+     * @brief isThisMoveGood
+     * @param row
+     * @param col
+     * @param ret the move will be saved in this array if it is doable
+     * @return true if last move, false if you can still move
+     */
+    bool isThisMoveGood(int row, int col, Vector<std::pair<int, int>> *ret);
     const Scacchiera *board;
     bool isWhite;
-    Coppia<int> pos;
+    std::pair<int, int> pos;
     char repr;
 };
 
