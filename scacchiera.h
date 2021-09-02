@@ -22,7 +22,7 @@ public:
     void reset();
 private:
     //2 dimensional array of pointers to Pezzo representing the chessboard
-    Vector<Vector<DeepPtr<Pezzo>>> chiera;
+    Vector<Vector<DeepPtr<Pezzo>>> board;
 };
 
 #endif // SCACCHIERA_H
