@@ -68,14 +68,14 @@ public:
     inline int capacity() const {return _capacity;}
 
 private:
-    T **_arr;
+    T *_arr;
     int _size;
     int _capacity;
 };
 
 template<class T>
 Vector<T>::Vector(int x)
-    :_arr(x == 0 ? new T*[10] : new T*[x]),
+    :_arr(x == 0 ? new T[10] : new T[x]),
       _size(0),
       _capacity(x == 0 ? 10 : x)
 {
@@ -84,13 +84,13 @@ Vector<T>::Vector(int x)
 
 template<class T>
 Vector<T>::Vector(int x, const T &o)
-    : _arr(x == 0 ? new T*[10] : new T*[x])
+    : _arr(x == 0 ? new T[10] : new T[x])
     , _size(x),
       _capacity(x == 0 ? 10 : x)
 {
     for(int i = 0; i < x; ++i)
     {
-        _arr[i] = new T(o);
+        _arr[i] = T(o);
     }
 }
 
@@ -98,16 +98,12 @@ Vector<T>::Vector(int x, const T &o)
 template<class T>
 Vector<T>::~Vector()
 {
-    for(int i = 0; i < _size; ++i)
-    {
-        delete _arr[i];
-    }
     delete[] _arr;
 }
 
 template<class T>
 Vector<T>::Vector(const Vector<T> &o)
-    :_arr(new T*[o._capacity])
+    :_arr(new T[o._capacity])
     ,_size(0)
     ,_capacity(o._capacity)
 
@@ -122,7 +118,7 @@ Vector<T>::Vector(const Vector<T> &o)
 template<class T>
 T & Vector<T>::operator[](int x) const
 {
-    return *(_arr[x]);
+    return _arr[x];
 }
 
 template<class T>
@@ -130,7 +126,7 @@ void Vector<T>::pushBack(const T& o)
 {
     if(_size == _capacity)
     {
-        T **newArr = new T*[_capacity * 2];
+        T *newArr = new T[_capacity * 2];
         for(int i = 0; i < _capacity; ++i)
         {
             newArr[i] = _arr[i];
@@ -139,7 +135,7 @@ void Vector<T>::pushBack(const T& o)
         _arr = newArr;
         _capacity *= 2;
     }
-    _arr[_size] = new T(o);
+    _arr[_size] = o;
     _size++;
 }
 
@@ -148,7 +144,6 @@ void Vector<T>::remove(int x)
 {
     if(x >= _size)
         return;
-    delete _arr[x];
     for(int i = x; i < _size - 1; ++i)
     {
         _arr[i] = _arr[i+1];
@@ -161,7 +156,6 @@ void Vector<T>::popBack()
 {
     if(_size > 0)
     {
-        delete _arr[_size - 1];
         _size--;
     }
 }
@@ -169,7 +163,7 @@ void Vector<T>::popBack()
 template<class T>
 T & Vector<T>::last() const
 {
-    return *_arr[_size - 1];
+    return _arr[_size - 1];
 }
 
 template<class T>
@@ -178,10 +172,7 @@ Vector<T> & Vector<T>::operator=(const Vector<T> &o)
     if(this == &o)
         return *this;
 
-    for(int i = 0; i < _size; ++i)
-    {
-        delete _arr[i];
-    }
+    delete[] _arr;
 
     _size = 0;
 
