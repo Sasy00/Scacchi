@@ -5,3 +5,13 @@ Donna::Donna(const Scacchiera *owner, bool x, const std::pair<int, int> &y)
 {
 
 }
+
+Vector<std::pair<int, int>> Donna::canMove(int row, int col)
+{
+    return Vector<std::pair<int, int>>();
+}
+
+Donna * Donna::clone() const
+{
+    return new Donna(*this);
+}

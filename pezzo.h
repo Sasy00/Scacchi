@@ -2,12 +2,13 @@
 #define PEZZO_H
 
 #include "vector.h"
+#include "clonable.h"
 #include <utility>
 
 //forward declaration
 class Scacchiera;
 
-class Pezzo
+class Pezzo : public Clonable<Pezzo>
 {
 public:
     Pezzo(const Scacchiera *owner, bool x, const std::pair<int, int> &y, char z);
@@ -17,6 +18,7 @@ public:
     bool getIsWhite() const;
     std::pair<int, int> getPosition() const;
     char getRepr() const;
+    virtual Pezzo *clone() const = 0;
 protected:
     /**
      * @brief isThisMoveGood
@@ -26,6 +28,7 @@ protected:
      * @return true if last move, false if you can still move
      */
     bool isThisMoveGood(int row, int col, Vector<std::pair<int, int>> *ret);
+
     const Scacchiera *board;
     bool isWhite;
     std::pair<int, int> pos;

@@ -3,6 +3,13 @@
 Scacchiera::Scacchiera()
     :board(8, Vector<DeepPtr<Pezzo>>(8))
 {
+    for(int i = 0; i < 8; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            board[i].pushBack(nullptr);
+        }
+    }
 }
 
 COLORE Scacchiera::occupata(int row, int col) const
@@ -21,6 +28,7 @@ bool Scacchiera::valido(int x, int y) const
 
 void Scacchiera::reset()
 {
+
     //pedoni
     for(int i = 0; i < 8; ++i)
     {

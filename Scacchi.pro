@@ -24,6 +24,7 @@ HEADERS += \
     TuttiPezzi.h \
     alfiere.h \
     cavallo.h \
+    clonable.h \
     deepptr.h \
     donna.h \
     mainwindow.h \

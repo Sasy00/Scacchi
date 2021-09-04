@@ -9,24 +9,42 @@ Alfiere::Alfiere(const Scacchiera *owner, bool x, const std::pair<int, int> &y)
 Vector<std::pair<int, int>> Alfiere::canMove(int row, int col)
 {
     Vector<std::pair<int, int>> ret;
-    //up
-    for(int i = pos.getFirst() - 1; i >= 0; --i)
-    {
-        //left
-        bool fin = false;
-        for(int j = pos.getSecond() - 1; j >= 0 && !fin; --j)
-        {
-            fin = isThisMoveGood(i, j, &ret);
-        }
-        //right
-        fin = false;
-        for(int j = pos.getSecond() + 1; j < 8 && !fin; ++j)
-        {
-            fin = isThisMoveGood(i, j, &ret);
-        }
-    }
-    for(int i = pos.getFirst()+1; i < 8; ++i)
-    {
+    bool fin = false;
 
+    //up left
+    for(int i = 1; board->valido(pos.first - i, pos.second - i) && !fin; ++i)
+    {
+        fin = isThisMoveGood(pos.first - i, pos.second - i, &ret);
     }
+
+    fin = false;
+
+    //up right
+    for(int i = 1; board->valido(pos.first - i, pos.second + i) && !fin; ++i)
+    {
+        fin = isThisMoveGood(pos.first - i, pos.second + i, &ret);
+    }
+
+    fin = false;
+
+    //down left
+    for(int i = 1; board->valido(pos.first + i, pos.second - i) && !fin; ++i)
+    {
+        fin = isThisMoveGood(pos.first + i, pos.second - i, &ret);
+    }
+
+    fin = false;
+
+    //down right
+    for(int i = 1; board->valido(pos.first + i, pos.second + i) && !fin; ++i)
+    {
+        fin = isThisMoveGood(pos.first + i, pos.second + i, &ret);
+    }
+
+    return ret;
+}
+
+Alfiere * Alfiere::clone() const
+{
+    return new Alfiere(*this);
 }

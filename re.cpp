@@ -6,3 +6,13 @@ Re::Re(const Scacchiera *owner, bool x, const std::pair<int, int> &y)
 {
 
 }
+
+Vector<std::pair<int, int>> Re::canMove(int row, int col)
+{
+    return Vector<std::pair<int, int>>();
+}
+
+Re * Re::clone() const
+{
+    return new Re(*this);
+}
