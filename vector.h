@@ -174,6 +174,8 @@ Vector<T> & Vector<T>::operator=(const Vector<T> &o)
 
     delete[] _arr;
 
+    _arr = new T[o._capacity];
+    _capacity = o._capacity;
     _size = 0;
 
     int fin = o.size();
