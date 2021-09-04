@@ -1,7 +1,7 @@
 #include "alfiere.h"
 #include "scacchiera.h"
 Alfiere::Alfiere(const Scacchiera *owner, bool x, const std::pair<int, int> &y)
-    :Pezzo(owner, x, y, x ? 'A' : 'a')
+    :Pezzo(owner, x, y, x ? 'B' : 'b')
 {
 
 }

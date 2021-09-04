@@ -1,5 +1,9 @@
 #include "scacchiera.h"
 #include "TuttiPezzi.h"
+
+Scacchiera::~Scacchiera(){
+
+}
 Scacchiera::Scacchiera()
     :board(8, Vector<DeepPtr<Pezzo>>(8))
 {
@@ -57,4 +61,8 @@ void Scacchiera::reset()
     board[7][5] = new Alfiere(this, false, std::pair<int, int>(7, 5));
     board[7][6] = new Cavallo(this, false, std::pair<int, int>(7, 6));
     board[7][7] = new Torre(this, false, std::pair<int, int>(7, 7));
+}
+const DeepPtr<Pezzo> Scacchiera::getPezzo(int row, int col) const
+{
+    return board[row][col];
 }

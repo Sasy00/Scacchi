@@ -20,6 +20,7 @@ public:
     COLORE occupata(int row, int col) const;
     bool valido(int x, int y) const;
     void reset();
+    const DeepPtr<Pezzo> getPezzo(int row, int col) const;
 private:
     //2 dimensional array of pointers to Pezzo representing the chessboard
     Vector<Vector<DeepPtr<Pezzo>>> board;
