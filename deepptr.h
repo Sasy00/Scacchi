@@ -1,11 +1,13 @@
 #ifndef DEEPPTR_H
 #define DEEPPTR_H
 
+#include <clonable.h>
+
 template<class T>
 class DeepPtr
 {
 public:
-    DeepPtr(const T *o = nullptr);
+    DeepPtr(const Clonable<T> *o = nullptr);
 
     ~DeepPtr();
     DeepPtr(const DeepPtr &o);
@@ -18,8 +20,8 @@ private:
 };
 
 template<class T>
-DeepPtr<T>::DeepPtr(const T *o)
-    :ptr(o ? new T(*o) : nullptr)
+DeepPtr<T>::DeepPtr(const Clonable<T> *o)
+    :ptr(o ? o->clone() : nullptr)
 
 {
 
@@ -33,7 +35,7 @@ DeepPtr<T>::~DeepPtr()
 
 template <class T>
 DeepPtr<T>::DeepPtr(const DeepPtr &o):
-    ptr(o.ptr ? new T(*(o.ptr)) : nullptr)
+    ptr(o.ptr ? (o.ptr)->clone() : nullptr)
 {
 
 }
@@ -46,7 +48,7 @@ DeepPtr<T> & DeepPtr<T>::operator=(const DeepPtr<T> &o)
         return *this;
     }
     delete ptr;
-    ptr = o.ptr ? new T(*(o.ptr)) : nullptr;
+    ptr = o.ptr ? (o.ptr)->clone() : nullptr;
     return *this;
 }
 
