@@ -14,6 +14,7 @@ SOURCES += \
     donna.cpp \
     main.cpp \
     mainwindow.cpp \
+    model.cpp \
     pedone.cpp \
     pezzo.cpp \
     re.cpp \
@@ -28,6 +29,7 @@ HEADERS += \
     deepptr.h \
     donna.h \
     mainwindow.h \
+    model.h \
     pedone.h \
     pezzo.h \
     re.h \

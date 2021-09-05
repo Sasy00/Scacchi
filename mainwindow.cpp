@@ -2,25 +2,20 @@
 #include "ui_mainwindow.h"
 #include "QLabel"
 #include <string>
-#include "scacchiera.h"
 #include <iostream>
 #include "QDir"
-MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow),board(nullptr)
+MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
+  ,model(new Model())
 {
     ui->setupUi(this);
-
+    model->init();
+    caricaImmagini();
     creaScacchiera();
-
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-}
-
-void MainWindow::setScacchiera(Scacchiera *s)
-{
-    board = s;
 }
 
 void MainWindow::creaScacchiera()
@@ -47,19 +42,24 @@ void MainWindow::creaScacchiera()
 void MainWindow::refreshPezzi()
 {
     const int red = 15;
+    Vector<Repr> v = model->getBoardRepr();
 
-    for(int i = 0; i < 8; ++i){
-        for(int y = 0; y < 8; ++y){
-            DeepPtr<Pezzo> arg = board->getPezzo(i,y);
-            if(!(arg == nullptr)){
-                char tipo = std::toupper((*arg).getRepr());
-                char colore = (*arg).getIsWhite() ? 'W' : 'B';
-
-                casella[i][y]->setPixmap(immagini[getImageIndex(colore,tipo)].scaled(dim-red,dim-red,Qt::KeepAspectRatio,Qt::SmoothTransformation));
-                casella[i][y]->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-            }
-            //casella[0][0]->setStyleSheet("foreground-image: url(:pezzi/WR.png);");
+    for(int i = 0; i < 8; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            casella[i][j]->clear();
         }
+    }
+
+    for(int i = 0; i < v.size(); ++i)
+    {
+        char tipo = std::toupper(v[i].pezzo);
+        char colore = std::toupper(v[i].colore);
+        int row = v[i].pos.first;
+        int col = v[i].pos.second;
+        casella[row][col]->setPixmap(immagini[getImageIndex(colore,tipo)].scaled(dim-red,dim-red,Qt::KeepAspectRatio,Qt::SmoothTransformation));
+        casella[row][col]->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
 
 }

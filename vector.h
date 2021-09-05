@@ -9,6 +9,11 @@ public:
      * @brief Constructor for class Vector
      * @param x: initial size of the vector
      */
+    class Iterator
+    {
+
+    };
+
 
     Vector(int x = 10);
     Vector(int x, const T &o);

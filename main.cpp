@@ -2,23 +2,20 @@
 #include "scacchiera.h"
 #include <QApplication>
 #include <iostream>
+
+std::pair<std::pair<char, int>,std::pair<char, int>> stringToTwoPairs(const char *s)
+{
+    //format XX YY
+    std::pair<char, int> src(s[0],s[1] - '0');
+    std::pair<char, int> dest(s[3], s[4] - '0');
+    return std::pair<std::pair<char, int>,std::pair<char, int>>(src, dest);
+}
+
 int main(int argc, char *argv[])
 {
-    Scacchiera s;
-    s.reset();
-    for(int i = 0; i < 8; ++i){
-        for (int j = 0; j < 8; ++j){
-            DeepPtr<Pezzo> arg = s.getPezzo(i,j);
-            if(!(arg == nullptr))
-                std::cout<<((*arg).getRepr());
-        }
-        std::cout<<std::endl;
-    }
     QApplication a(argc, argv);
     MainWindow w;
-    w.setScacchiera(&s);
-    w.caricaImmagini();
-    w.refreshPezzi();
     w.show();
+    w.refreshPezzi();
     return a.exec();
 }
