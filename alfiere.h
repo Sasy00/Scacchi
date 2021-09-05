@@ -6,7 +6,7 @@
 class Alfiere : public Pezzo
 {
 public:
-    Alfiere(const Scacchiera *owner, bool x, const std::pair<int, int> &y);
+    Alfiere(const Scacchiera *owner, bool x);
     virtual Vector<std::pair<int, int>>canMove(int row, int col) override;
     virtual Alfiere * clone() const override;
 };

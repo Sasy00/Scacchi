@@ -11,12 +11,12 @@ class Scacchiera;
 class Pezzo : public Clonable<Pezzo>
 {
 public:
-    Pezzo(const Scacchiera *owner, bool x, const std::pair<int, int> &y, char z);
+    Pezzo(const Scacchiera *owner, bool x, char z);
     virtual ~Pezzo();
     virtual Vector<std::pair<int, int>> canMove(int row, int col) = 0;
 
     bool getIsWhite() const;
-    std::pair<int, int> getPosition() const;
+    //std::pair<int, int> getPosition() const;
     char getRepr() const;
     virtual Pezzo *clone() const = 0;
 protected:
@@ -31,7 +31,7 @@ protected:
 
     const Scacchiera *board;
     bool isWhite;
-    std::pair<int, int> pos;
+    //std::pair<int, int> pos;
     char repr;
 };
 

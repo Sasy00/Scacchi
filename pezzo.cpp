@@ -1,9 +1,8 @@
 #include "pezzo.h"
 #include "scacchiera.h"
-Pezzo::Pezzo(const Scacchiera *owner, bool x, const std::pair<int, int> &y, char z)
+Pezzo::Pezzo(const Scacchiera *owner, bool x, char z)
     : board(owner)
     , isWhite(x)
-    , pos(y)
     , repr(z)
 {
 
@@ -17,11 +16,6 @@ Pezzo::~Pezzo()
 bool Pezzo::getIsWhite() const
 {
     return isWhite;
-}
-
-std::pair<int, int> Pezzo::getPosition() const
-{
-    return pos;
 }
 
 char Pezzo::getRepr() const

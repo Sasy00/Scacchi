@@ -28,5 +28,8 @@ private:
     QPixmap immagini [12];
     Model *model;
 
+private slots:
+
+
 };
 #endif // MAINWINDOW_H
