@@ -9,11 +9,16 @@ public:
     Vector<Repr> getBoardRepr() const;
     Vector<std::pair<int, int>> getPieceMoves(int row, int col) const;
     void init();
+    void reset();
     inline bool getTurnWhite() const { return turnWhite; }
     bool move(const std::pair<int, int> &src, const std::pair<int, int> &dest);
+    inline int getnMossa(){ return nMossa; }
+    inline int increaseMossa(){ return ++nMossa; }
+
 private:
     bool turnWhite;
     Scacchiera *s;
+    int nMossa;
 };
 
 #endif // MODEL_H

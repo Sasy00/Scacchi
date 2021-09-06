@@ -31,6 +31,9 @@
       <kerning>false</kerning>
      </font>
     </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
     <property name="plainText">
      <string notr="true">1.d4 d5 
 2.c4 dxc4 
@@ -87,7 +90,7 @@
 53.Rd7 1-0</string>
     </property>
     <property name="textInteractionFlags">
-     <set>Qt::NoTextInteraction</set>
+     <set>Qt::TextSelectableByMouse</set>
     </property>
     <property name="placeholderText">
      <string notr="true"/>
@@ -152,6 +155,7 @@
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionRicomincia"/>
     <addaction name="actionSalva_Partita"/>
     <addaction name="actionCarica_Partita"/>
     <addaction name="actionEsci"/>
@@ -172,6 +176,11 @@
   <action name="actionEsci">
    <property name="text">
     <string>Esci</string>
+   </property>
+  </action>
+  <action name="actionRicomincia">
+   <property name="text">
+    <string>Ricomincia</string>
    </property>
   </action>
  </widget>
