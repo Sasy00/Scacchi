@@ -1,16 +1,25 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "QLabel"
+#include <QAction>
+#include <QCoreApplication>
 #include <string>
 #include <iostream>
 #include "QDir"
+#include <QFileDialog>
+#include "QTextStream"
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
    ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
     ui->setupUi(this);
+    connect(ui->actionEsci, SIGNAL(triggered(bool)), this, SLOT(quit()));
+    connect(ui->actionCarica_Partita, SIGNAL(triggered(bool)), this, SLOT(carica()));
+    connect(ui->actionSalva_Partita, SIGNAL(triggered(bool)), this, SLOT(salva()));
+    connect(ui->actionRicomincia, SIGNAL(triggered(bool)), this, SLOT(ricomincia()));
     model->init();
     caricaImmagini();
     creaScacchiera();
+    ui->plainTextEdit->setPlainText("");
 }
 
 MainWindow::~MainWindow()
@@ -27,9 +36,6 @@ MainWindow::~MainWindow()
         }
     }
 }
-
-
-
 
 void MainWindow::creaScacchiera()
 {
@@ -54,7 +60,6 @@ void MainWindow::creaScacchiera()
     }
     connect(mapper, SIGNAL(mapped(int)), this, SLOT(handleMove(int)));
 }
-
 
 void MainWindow::refreshPezzi()
 {
@@ -166,7 +171,9 @@ void MainWindow::handleMove(int x)
         }
         if(trovato)
         {
+            if(!model->getTurnWhite()) model->increaseMossa();
             model->move(*firstClick, std::pair<int, int>(row, col));
+            segnaMossa(firstClick->first, firstClick->second, row, col);
             delete firstClick;
             firstClick = nullptr;
             refreshPezzi();
@@ -192,6 +199,33 @@ void MainWindow::handleMove(int x)
 
 }
 
+void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
+    QString s;
+    s.clear();
+    ui->plainTextEdit->moveCursor (QTextCursor::End);
+    if(!model->getTurnWhite()){
+        s.append(QString::number(model->getnMossa()));
+        s.append(". ");
+        s.append(char(m2+'a'));
+        s.append(char((m1+1)+'0'));
+        s.append(char(m4+'a'));
+        s.append(char((m3+1)+'0'));
+        //if(ui->plainTextEdit->)
+        ui->plainTextEdit->insertPlainText(s);
+    }
+    else{
+        s.append(' ');
+        s.append(char(m2+'a'));
+        s.append(char((m1+1)+'0'));
+        s.append(char(m4+'a'));
+        s.append(char((m3+1)+'0'));
+        s.append('\n');
+        ui->plainTextEdit->insertPlainText(s);
+    }
+
+
+}
+
 void MainWindow::resetColors()
 {
     bool alternato = true;
@@ -208,3 +242,53 @@ void MainWindow::resetColors()
         alternato = !alternato;
     }
 }
+
+void MainWindow::carica(){
+    QString filename = QFileDialog::getOpenFileName(this,tr("Carica Partita"), tr("*.txt"));
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    std::string gamestring;
+    while (!file.atEnd()) {
+        gamestring = file.readAll().toStdString();
+    }
+    file.close();
+
+    ricomincia();
+    ui->plainTextEdit->setPlainText(gamestring.c_str());
+
+
+    for(auto i = gamestring.begin(); i != gamestring.end(); ++i){
+        if(*i == static_cast<char>(model->getnMossa() + '0') && *(i+1) == '.' && *(i+2) == ' '){
+            model->move(std::pair<int,int>(*(i+4) - '1',*(i+3) - 'a'), std::pair<int,int>(*(i+6) - '1', *(i+5)- 'a'));
+            i+=6;
+            if(i+1 != gamestring.end() && *(i+1) != '\n'){
+                i++;
+                model->move(std::pair<int,int>(*(i+2)- '1',*(i+1)- 'a'), std::pair<int,int>(*(i+4)- '1',*(i+3)- 'a'));
+                model->increaseMossa();
+            }
+        }
+    }
+    refreshPezzi();
+
+}
+
+void MainWindow::salva(){
+    QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), tr("*.txt"));
+    QFile file(filename);
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+        return;
+    QTextStream out(&file);
+    out << ui->plainTextEdit->toPlainText();
+    file.close();
+}
+
+void MainWindow::ricomincia(){
+    model->reset();
+    resetColors();
+    delete firstClick;
+    firstClick = nullptr;
+    ui->plainTextEdit->setPlainText("");
+    refreshPezzi();
+}
+
