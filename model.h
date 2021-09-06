@@ -11,13 +11,9 @@ public:
     void init();
     inline bool getTurnWhite() const { return turnWhite; }
     bool move(const std::pair<int, int> &src, const std::pair<int, int> &dest);
-    void reset();
-    inline int getnMossa(){return nMossa;}
-    inline int increaseMossa(){return nMossa++;}
 private:
     bool turnWhite;
     Scacchiera *s;
-    int nMossa;
 };
 
 #endif // MODEL_H

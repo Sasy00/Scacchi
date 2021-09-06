@@ -14,7 +14,6 @@ void Model::init()
 {
     s->reset();
     turnWhite = true;
-    nMossa = 1;
 }
 
 Vector<Repr> Model::getBoardRepr() const
@@ -52,8 +51,3 @@ Vector<std::pair<int, int>> Model::getPieceMoves(int row, int col) const
     return Vector<std::pair<int, int>>(1);
 }
 
-void Model::reset(){
-    s->reset();
-    turnWhite = true;
-    nMossa = 1;
-}

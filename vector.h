@@ -37,6 +37,8 @@ public:
      */
     T & operator[](int n) const;
 
+    Vector & operator += (const Vector &o);
+
     /**
      * @brief inserts a copy of the argument at the end of the vector
      * @param o: element to be inserted
@@ -184,6 +186,16 @@ Vector<T> & Vector<T>::operator=(const Vector<T> &o)
 
     int fin = o.size();
     for(int i = 0; i < fin; ++i)
+    {
+        pushBack(o[i]);
+    }
+    return *this;
+}
+
+template<class T>
+Vector<T> & Vector<T>::operator+=(const Vector &o)
+{
+    for(int i = 0; i < o.size(); ++i)
     {
         pushBack(o[i]);
     }
