@@ -291,4 +291,3 @@ void MainWindow::ricomincia(){
     ui->plainTextEdit->setPlainText("");
     refreshPezzi();
 }
-

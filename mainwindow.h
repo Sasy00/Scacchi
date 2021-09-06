@@ -7,7 +7,7 @@
 #include "clickablelabel.h"
 #include "model.h"
 #include <utility>
-#include <QCoreApplication>
+#include <qcoreapplication.h>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -19,12 +19,10 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    //void setScacchiera(Scacchiera *s);
     void creaScacchiera();
     void refreshPezzi();
     void caricaImmagini();
     void segnaMossa(int m1, int m2, int m3, int m4);
-
 private:
     Ui::MainWindow *ui;
     QSignalMapper *mapper;

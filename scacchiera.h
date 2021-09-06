@@ -33,12 +33,17 @@ public:
     const DeepPtr<Pezzo> getPezzo(int row, int col) const;
     bool move(const std::pair<int, int> &src, const std::pair<int, int> &dest);
     Vector<std::pair<int, int>> getPieceMoves(int row, int col) const;
-
+    Vector<std::pair<int, int>> getMosseGiocatore(bool white) const;
     Vector<Repr> getRepresentation() const;
 private:
     //2 dimensional array of pointers to Pezzo representing the chessboard
     Vector<Vector<DeepPtr<Pezzo>>> board;
     bool whiteQueenCastle;
+    bool whiteKingCastle;
+    bool blackQueenCastle;
+    bool blackKingCastle;
+
+
 };
 
 /*

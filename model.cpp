@@ -44,6 +44,12 @@ bool Model::move(const std::pair<int, int> &src, const std::pair<int, int> &dest
     return false;
 }
 
+void Model::reset(){
+    s->reset();
+    turnWhite = true;
+    nMossa = 1;
+}
+
 Vector<std::pair<int, int>> Model::getPieceMoves(int row, int col) const
 {
     DeepPtr<Pezzo> ptr = s->getPezzo(row, col);
@@ -52,8 +58,3 @@ Vector<std::pair<int, int>> Model::getPieceMoves(int row, int col) const
     return Vector<std::pair<int, int>>(1);
 }
 
-void Model::reset(){
-    s->reset();
-    turnWhite = true;
-    nMossa = 1;
-}
