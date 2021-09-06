@@ -31,10 +31,15 @@ bool Scacchiera::valido(int x, int y) const
 
 void Scacchiera::reset()
 {
-
+    for(int i = 0; i < 8; ++i){
+        for(int y = 0; y < 8; ++y){
+            board[i][y] = nullptr;
+        }
+    }
     //pedoni
     for(int i = 0; i < 8; ++i)
     {
+
         //bianchi
         board[1][i] = new Pedone(this, true);
         //neri
