@@ -31,14 +31,28 @@ public:
     bool valido(int x, int y) const;
     void reset();
     const DeepPtr<Pezzo> getPezzo(int row, int col) const;
-    void move(const std::pair<char, int> &src, const std::pair<char, int> &dest);
-
-
+    bool move(const std::pair<int, int> &src, const std::pair<int, int> &dest);
+    Vector<std::pair<int, int>> getPieceMoves(int row, int col) const;
 
     Vector<Repr> getRepresentation() const;
 private:
     //2 dimensional array of pointers to Pezzo representing the chessboard
     Vector<Vector<DeepPtr<Pezzo>>> board;
+    bool whiteQueenCastle;
 };
+
+/*
+ * funzione per avere tutte le mosse possibili del giocatore di turno
+ * controllare se sei sotto scacco (se nelle mosse possibili ce n'è una che combacia con la posizione del re opposto)
+ * controllare se la mossa è legale (sei sotto scacco dopo aver fatto la mossa)
+ * controllare se è scaccomatto se dopo tutte le mosse possibili sei sotto scacco
+ * controllare se è stallo ovvero se dopo tutte le mosse possibili sei sotto scacco MA ora non sei sotto scacco
+ * controllare la roba delle 50 mosse
+ * controllare la roba della ripetizione 3 volte della posizione --come cazzo si fa pt
+ * promozione pedone
+ * arrocco
+ * en passant
+ *
+ */
 
 #endif // SCACCHIERA_H

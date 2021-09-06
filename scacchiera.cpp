@@ -66,10 +66,11 @@ const DeepPtr<Pezzo> Scacchiera::getPezzo(int row, int col) const
     return board[row][col];
 }
 
-void Scacchiera::move(const std::pair<char, int> &src, const std::pair<char, int> &dest)
+bool Scacchiera::move(const std::pair<int, int> &src, const std::pair<int, int> &dest)
 {
-    board[dest.second - 1][dest.first - 'a'] = board[src.second - 1][src.first - 'a'];
-    board[src.second - 1][src.first - 'a'] = nullptr;
+    board[dest.first][dest.second] = board[src.first][src.second];
+    board[src.first][src.second] = nullptr;
+    return true;
 }
 
 Vector<Repr> Scacchiera::getRepresentation() const
@@ -87,6 +88,16 @@ Vector<Repr> Scacchiera::getRepresentation() const
             }
         }
     }
+    return ret;
+}
+
+Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col) const
+{
+    Vector<std::pair<int, int>> ret;
+
+    if(!(board[row][col] == nullptr))
+        ret = (*board[row][col]).canMove(row, col);
+
     return ret;
 }
 

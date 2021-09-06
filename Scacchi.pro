@@ -11,6 +11,7 @@ CONFIG += c++11
 SOURCES += \
     alfiere.cpp \
     cavallo.cpp \
+    clickablelabel.cpp \
     donna.cpp \
     main.cpp \
     mainwindow.cpp \
@@ -25,6 +26,7 @@ HEADERS += \
     TuttiPezzi.h \
     alfiere.h \
     cavallo.h \
+    clickablelabel.h \
     clonable.h \
     deepptr.h \
     donna.h \

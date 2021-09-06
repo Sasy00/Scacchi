@@ -14,7 +14,6 @@ public:
 
     };
 
-
     Vector(int x = 10);
     Vector(int x, const T &o);
     ~Vector();

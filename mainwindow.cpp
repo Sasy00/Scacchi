@@ -5,7 +5,7 @@
 #include <iostream>
 #include "QDir"
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
-  ,model(new Model())
+   ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
     ui->setupUi(this);
     model->init();
@@ -17,7 +17,8 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete model;
-
+    delete mapper;
+    delete firstClick;
     for(int i = 0; i < 8; ++i)
     {
         for(int j = 0; j < 8; ++j)
@@ -27,14 +28,16 @@ MainWindow::~MainWindow()
     }
 }
 
+
+
+
 void MainWindow::creaScacchiera()
 {
     bool alternato = true;
 
     for(int i = 0; i < 8; ++i){
         for(int y = 0; y < 8; ++y){
-            casella[i][y] = new QLabel(this);
-            //casella[i][y]->setFrameStyle(QFrame::Panel);
+            casella[i][y] = new ClickableLabel(this);
             casella[i][y]->setGeometry(50+(y*dim),50+((7-i)*dim),dim,dim);
             casella[i][y]->setAutoFillBackground(true);
             if(alternato)
@@ -43,10 +46,15 @@ void MainWindow::creaScacchiera()
                 casella[i][y]->setStyleSheet("QLabel { background-color : white}");
             alternato = !alternato;
             casella[i][y]->show();
+
+            connect(casella[i][y], SIGNAL(clicked()), mapper, SLOT(map()));
+            mapper->setMapping(casella[i][y], index(i, y, 8));
         }
         alternato = !alternato;
     }
+    connect(mapper, SIGNAL(mapped(int)), this, SLOT(handleMove(int)));
 }
+
 
 void MainWindow::refreshPezzi()
 {
@@ -128,3 +136,75 @@ int MainWindow::getImageIndex(char colore, char tipo) const{
     return 0;
 }
 
+void MainWindow::handleMove(int x)
+{
+    resetColors();
+    Vector<std::pair<int, int>> moves;
+    std::pair<int, int> pos = rowcol(x, 8);
+    int row = pos.first;
+    int col = pos.second;
+    moves = model->getPieceMoves(row, col);
+    if(!firstClick)
+    {
+        if(moves.size() != 0)
+        {
+            firstClick = new std::pair<int, int>(row, col);
+            for(int i = 0; i < moves.size(); ++i)
+            {
+                casella[moves[i].first][moves[i].second]->setStyleSheet("QLabel { background-color : red}");
+            }
+        }
+    }
+    else
+    {
+
+        bool trovato = false;
+        Vector<std::pair<int, int>> oldPieceMoves = model->getPieceMoves(firstClick->first, firstClick->second);
+        for(int i = 0; i < oldPieceMoves.size() && !trovato; ++i)
+        {
+            trovato = oldPieceMoves[i] == std::pair<int, int>(row, col);
+        }
+        if(trovato)
+        {
+            model->move(*firstClick, std::pair<int, int>(row, col));
+            delete firstClick;
+            firstClick = nullptr;
+            refreshPezzi();
+        }
+        else
+        {
+            /*
+            if(model->getPieceMoves(row, col).size() > 0)
+            {
+                delete firstClick;
+                firstClick = new std::pair<int, int>(row, col);
+            }
+            else
+            {
+                delete firstClick;
+                firstClick = nullptr;
+            }
+            */
+            delete firstClick;
+            firstClick = nullptr;
+        }
+    }
+
+}
+
+void MainWindow::resetColors()
+{
+    bool alternato = true;
+    for(int i = 0; i < 8; ++i)
+    {
+        for(int j = 0; j < 8; ++j)
+        {
+            if(alternato)
+                casella[i][j]->setStyleSheet("QLabel { background-color : black}");
+            else
+                casella[i][j]->setStyleSheet("QLabel { background-color : white}");
+            alternato = !alternato;
+        }
+        alternato = !alternato;
+    }
+}
