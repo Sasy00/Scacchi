@@ -9,6 +9,8 @@
 #include <QFileDialog>
 #include "QTextStream"
 #include <sstream>
+#include <QStatusBar>
+
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
    ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
@@ -181,35 +183,36 @@ void MainWindow::handleMove(int x)
             switch(res)
             {
                 case Model::PATTA:
-                    std::cout << "PATTA" << std::endl;
+                    ui->fondotesto->setText("La partita è PATTA!");
                     break;
                 case Model::BIANCO:
-                    std::cout << "Vince BIANCO" << std::endl;
+                    ui->fondotesto->setText("Vince il BIANCO!");
                     break;
                 case Model::NERO:
-                    std::cout << "Vince NERO" << std::endl;
+                    ui->fondotesto->setText("Vince il NERO!");
                     break;
                 default:
-                    std::cout << res << std::endl;
                     break;
              }
         }
         else
         {
-            /*
+
             if(model->getPieceMoves(row, col).size() > 0)
             {
                 delete firstClick;
-                firstClick = new std::pair<int, int>(row, col);
+                firstClick = nullptr;
+                handleMove(x);
             }
             else
             {
                 delete firstClick;
                 firstClick = nullptr;
             }
-            */
+            /*
             delete firstClick;
             firstClick = nullptr;
+            */
         }
     }
 
@@ -226,8 +229,8 @@ void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
         s.append(char((m1+1)+'0'));
         s.append(char(m4+'a'));
         s.append(char((m3+1)+'0'));
-        //if(ui->plainTextEdit->)
         ui->plainTextEdit->insertPlainText(s);
+        ui->fondotesto->setText("Tocca al Nero");
     }
     else{
         s.append(' ');
@@ -237,6 +240,7 @@ void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
         s.append(char((m3+1)+'0'));
         s.append('\n');
         ui->plainTextEdit->insertPlainText(s);
+        ui->fondotesto->setText("Tocca al Bianco");
     }
 
 
@@ -260,7 +264,7 @@ void MainWindow::resetColors()
 }
 
 void MainWindow::carica(){
-    QString filename = QFileDialog::getOpenFileName(this,tr("Carica Partita"), tr("*.txt"));
+    QString filename = QFileDialog::getOpenFileName(this,tr("Carica Partita"),"", tr("Partita (*.LPGN)"));
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -269,19 +273,17 @@ void MainWindow::carica(){
         gamestring = file.readAll().toStdString();
     }
     file.close();
-
+    if(gamestring.size() < 7)
+        return;
     ricomincia();
+
     ui->plainTextEdit->setPlainText(gamestring.c_str());
 
     std::stringstream ss(gamestring);
     std::string nmoveS;
     std::string whiteMove;
     std::string blackMove;
-    /*
-    std::cout << nmoveS << std::endl;
-    std::cout << whiteMove << std::endl;
-    std::cout << blackMove << std::endl;
-    */
+
     while(!ss.eof())
     {
         ss >> nmoveS;
@@ -293,24 +295,11 @@ void MainWindow::carica(){
             model->move(std::pair<int, int>(blackMove[1] - '1', blackMove[0] - 'a'), std::pair<int, int>(blackMove[3] - '1', blackMove[2] - 'a'));
         }
     }
-    /*
-    for(auto i = gamestring.begin(); i != gamestring.end(); ++i){
-        if(*i == static_cast<char>(model->getnMossa() + '0') && *(i+1) == '.' && *(i+2) == ' '){
-            model->move(std::pair<int,int>(*(i+4) - '1',*(i+3) - 'a'), std::pair<int,int>(*(i+6) - '1', *(i+5)- 'a'));
-            i+=6;
-            if(i+1 != gamestring.end() && *(i+1) != '\n'){
-                i++;
-                model->move(std::pair<int,int>(*(i+2)- '1',*(i+1)- 'a'), std::pair<int,int>(*(i+4)- '1',*(i+3)- 'a'));
-                model->increaseMossa();
-            }
-        }
-    }*/
-
     refreshPezzi();
 }
 
 void MainWindow::salva(){
-    QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), tr("*.txt"));
+    QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), "", tr("Partita (*.LPGN)"));
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;

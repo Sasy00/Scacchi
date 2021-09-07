@@ -489,8 +489,6 @@ bool Scacchiera::sottoScacco(bool white)
 
 Vector<std::pair<int, int>> Scacchiera::controllaMosse(int row, int col, const Vector<std::pair<int, int>> &mosse)
 {
-    static int calls = 0;
-    std::cout << "pog " << calls++ << std::endl;
     Vector<std::pair<int, int>> ret;
     Vector<Vector<DeepPtr<Pezzo>>> temp;
     for(int i = 0; i < mosse.size(); ++i)
