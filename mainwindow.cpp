@@ -9,8 +9,6 @@
 #include <QFileDialog>
 #include "QTextStream"
 #include <sstream>
-#include <QStatusBar>
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
    ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
@@ -77,12 +75,12 @@ void MainWindow::refreshPezzi()
         }
     }
 
-    for(int i = 0; i < v.size(); ++i)
+    for(auto it = v.begin(); it != v.end(); ++it)
     {
-        char tipo = std::toupper(v[i].pezzo);
-        char colore = std::toupper(v[i].colore);
-        int row = v[i].pos.first;
-        int col = v[i].pos.second;
+        char tipo = std::toupper(it->pezzo);
+        char colore = std::toupper(it->colore);
+        int row = it->pos.first;
+        int col = it->pos.second;
         casella[row][col]->setPixmap(immagini[getImageIndex(colore,tipo)].scaled(dim-red,dim-red,Qt::KeepAspectRatio,Qt::SmoothTransformation));
         casella[row][col]->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
@@ -91,7 +89,7 @@ void MainWindow::refreshPezzi()
 
 void MainWindow::caricaImmagini(){
     std::string path = QDir::currentPath().toStdString();
-    path += "\\debug\\pezzi\\";
+    path += "/pezzi/";
     immagini[0].load(QString((path + std::string("WP.png")).c_str()));
     immagini[1].load(QString((path + std::string("BP.png")).c_str()));
     immagini[2].load(QString((path + std::string("WR.png")).c_str()));
@@ -157,9 +155,9 @@ void MainWindow::handleMove(int x)
         if(moves.size() != 0)
         {
             firstClick = new std::pair<int, int>(row, col);
-            for(int i = 0; i < moves.size(); ++i)
+            for(auto it = moves.begin(); it != moves.end(); ++it)
             {
-                casella[moves[i].first][moves[i].second]->setStyleSheet("QLabel { background-color : red}");
+                casella[it->first][it->second]->setStyleSheet("QLabel { background-color : red}");
             }
         }
     }
@@ -168,9 +166,9 @@ void MainWindow::handleMove(int x)
 
         bool trovato = false;
         Vector<std::pair<int, int>> oldPieceMoves = model->getPieceMoves(firstClick->first, firstClick->second);
-        for(int i = 0; i < oldPieceMoves.size() && !trovato; ++i)
+        for(auto it = oldPieceMoves.begin(); it != oldPieceMoves.end() && !trovato; ++it)
         {
-            trovato = oldPieceMoves[i] == std::pair<int, int>(row, col);
+            trovato = oldPieceMoves[it] == std::pair<int, int>(row, col);
         }
         if(trovato)
         {
@@ -197,10 +195,10 @@ void MainWindow::handleMove(int x)
         }
         else
         {
-
             if(model->getPieceMoves(row, col).size() > 0)
             {
                 delete firstClick;
+                //firstClick = new std::pair<int, int>(row, col);
                 firstClick = nullptr;
                 handleMove(x);
             }
@@ -209,13 +207,8 @@ void MainWindow::handleMove(int x)
                 delete firstClick;
                 firstClick = nullptr;
             }
-            /*
-            delete firstClick;
-            firstClick = nullptr;
-            */
         }
     }
-
 }
 
 void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
@@ -276,26 +269,43 @@ void MainWindow::carica(){
     if(gamestring.size() < 7)
         return;
     ricomincia();
-
     ui->plainTextEdit->setPlainText(gamestring.c_str());
 
     std::stringstream ss(gamestring);
     std::string nmoveS;
     std::string whiteMove;
     std::string blackMove;
-
+    Model::STATE state = Model::CONTINUA;
     while(!ss.eof())
     {
         ss >> nmoveS;
         ss >> whiteMove;
-        model->move(std::pair<int, int>(whiteMove[1] - '1', whiteMove[0] - 'a'), std::pair<int, int>(whiteMove[3] - '1', whiteMove[2] - 'a'));
+        state = model->move(std::pair<int, int>(whiteMove[1] - '1', whiteMove[0] - 'a'), std::pair<int, int>(whiteMove[3] - '1', whiteMove[2] - 'a'));
         if(!ss.eof())
         {
             ss >> blackMove;
-            model->move(std::pair<int, int>(blackMove[1] - '1', blackMove[0] - 'a'), std::pair<int, int>(blackMove[3] - '1', blackMove[2] - 'a'));
+            state = model->move(std::pair<int, int>(blackMove[1] - '1', blackMove[0] - 'a'), std::pair<int, int>(blackMove[3] - '1', blackMove[2] - 'a'));
+
         }
     }
     refreshPezzi();
+    switch (state) {
+    case Model::CONTINUA:
+        if(model->getTurnWhite())
+            ui->fondotesto->setText("Tocca al Bianco");
+        else
+            ui->fondotesto->setText("Tocca al Nero");
+        break;
+    case Model::BIANCO:
+        ui->fondotesto->setText("Vince il BIANCO!");
+        break;
+    case Model::NERO:
+        ui->fondotesto->setText("Vince il NERO!");
+        break;
+    case Model::PATTA:
+        ui->fondotesto->setText("La partita è PATTA!");
+        break;
+    }
 }
 
 void MainWindow::salva(){
@@ -315,4 +325,5 @@ void MainWindow::ricomincia(){
     firstClick = nullptr;
     ui->plainTextEdit->setPlainText("");
     refreshPezzi();
+    ui->fondotesto->setText("Tocca al Bianco");
 }

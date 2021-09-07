@@ -31,9 +31,9 @@ Model::STATE Model::move(const std::pair<int, int> &src, const std::pair<int, in
     {
         Vector<std::pair<int, int>> moves = s->getPieceMoves(src.first, src.second);
         bool trovato = false;
-        for(int i = 0; i < moves.size() && !trovato; ++i)
+        for(auto it = moves.begin(); it != moves.end() && !trovato; ++it)
         {
-            trovato = moves[i] == dest;
+            trovato = *it == dest;
         }
         if(trovato)
         {
