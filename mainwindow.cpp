@@ -310,6 +310,8 @@ void MainWindow::carica(){
 
 void MainWindow::salva(){
     QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), "", tr("Partita (*.LPGN)"));
+    if(!filename.endsWith(".LPGN"))
+        filename+=".LPGN";
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;
