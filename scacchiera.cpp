@@ -80,6 +80,47 @@ const DeepPtr<Pezzo> Scacchiera::getPezzo(int row, int col) const
 bool Scacchiera::move(const std::pair<int, int> &src, const std::pair<int, int> &dest)
 {
     DeepPtr<Pezzo> ptr = board[src.first][src.second];
+    auto temp = board[dest.first][dest.second];
+    if(!(temp == nullptr))
+    {
+        if(dynamic_cast<Torre *>(&(*temp)))
+        {
+            if((*temp).getIsWhite())
+            {
+                if(whiteKingCastle)
+                {
+                    if(dest.first == 0 && dest.second == 7)
+                    {
+                        whiteKingCastle = false;
+                    }
+                }
+                if(whiteQueenCastle)
+                {
+                    if(dest.first == 0 && dest.second == 0)
+                    {
+                        whiteQueenCastle = false;
+                    }
+                }
+            }
+            else
+            {
+                if(blackKingCastle)
+                {
+                    if(dest.first == 7 && dest.second == 7)
+                    {
+                        blackKingCastle = false;
+                    }
+                }
+                if(blackQueenCastle)
+                {
+                    if(dest.first == 7 && dest.second == 0)
+                    {
+                        blackQueenCastle = false;
+                    }
+                }
+            }
+        }
+    }
     if(dynamic_cast<Re *>( &( *(ptr) ) ) ) //if source piece is a king
     {
         if((*ptr).getIsWhite())
@@ -105,6 +146,11 @@ bool Scacchiera::move(const std::pair<int, int> &src, const std::pair<int, int> 
                     whiteKingCastle = false;
                     whiteQueenCastle = false;
                     return true;
+                }
+                else
+                {
+                    whiteKingCastle = false;
+                    whiteQueenCastle = false;
                 }
             }
         }
@@ -132,7 +178,11 @@ bool Scacchiera::move(const std::pair<int, int> &src, const std::pair<int, int> 
                     blackQueenCastle = false;
                     return true;
                 }
-
+                else
+                {
+                    blackKingCastle = false;
+                    blackQueenCastle = false;
+                }
             }
 
         }
@@ -163,6 +213,27 @@ bool Scacchiera::move(const std::pair<int, int> &src, const std::pair<int, int> 
             }
         }
     }
+    if(dynamic_cast<Pedone *>(&(*ptr)))
+    {
+        if((*ptr).getIsWhite())
+        {
+            if(dest.first == 7)
+            {
+                board[src.first][src.second] = nullptr;
+                board[dest.first][dest.second] = new Donna(this, true);
+                return true;
+            }
+        }
+        else
+        {
+            if(dest.first == 0)
+            {
+                board[src.first][src.second] = nullptr;
+                board[dest.first][dest.second] = new Donna(this, false);
+                return true;
+            }
+        }
+    }
     board[dest.first][dest.second] = board[src.first][src.second];
     board[src.first][src.second] = nullptr;
     return true;
@@ -186,7 +257,7 @@ Vector<Repr> Scacchiera::getRepresentation() const
     return ret;
 }
 
-Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white) const
+Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white, bool serveScacco)
 {
     Vector<std::pair<int, int>> ret;
     DeepPtr<Pezzo> ptr;
@@ -199,7 +270,10 @@ Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white) const
             {
                 if((*ptr).getIsWhite() == white)
                 {
-                    ret += (*ptr).canMove(i, j);
+                    if(serveScacco)
+                        ret += getPieceMoves(i, j);
+                    else
+                        ret += (*ptr).canMove(i, j);
                 }
             }
         }
@@ -207,7 +281,7 @@ Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white) const
     return ret;
 }
 
-Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col) const
+Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
 {
     Vector<std::pair<int, int>> ret;
     DeepPtr<Pezzo> ptr = board[row][col];
@@ -224,7 +298,7 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col) const
             {
                 if(whiteKingCastle || whiteQueenCastle) //se può arroccare
                 {
-                    auto v = getMosseGiocatore(!white);
+                    auto v = getMosseGiocatore(!white, false);
                     if(whiteKingCastle && (board[0][5] == nullptr) && (board[0][6] == nullptr)) //se può fare arroco corto e f1 e g1 sono libere
                     {
                         bool minaccia = false;
@@ -297,7 +371,7 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col) const
             {
                 if(blackKingCastle || blackQueenCastle) //se può arroccare
                 {
-                    auto v = getMosseGiocatore(!white);
+                    auto v = getMosseGiocatore(!white, false);
                     if(blackKingCastle && (board[7][5] == nullptr) && (board[7][6] == nullptr)) //se può fare arroco corto e f1 e g1 sono libere
                     {
                         bool minaccia = false;
@@ -366,7 +440,71 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col) const
                 }
             }
         }
+        auto buone = controllaMosse(row, col, ret);
+        return buone;
     }
+    return ret;
+}
+
+bool Scacchiera::getStallo(bool white)
+{
+    if(getMosseGiocatore(white, true).size() == 0 && !sottoScacco(white))
+        return true;
+    return false;
+}
+
+bool Scacchiera::getScaccoMatto(bool white)
+{
+    if(getMosseGiocatore(white, true).size() == 0 && sottoScacco(white))
+        return true;
+    return false;
+}
+
+bool Scacchiera::sottoScacco(bool white)
+{
+    std::pair<int, int> kingpos;
+    bool trovato = false;
+    for(int i = 0; i < 8 && !trovato; ++i)
+    {
+        for(int j = 0; j < 8 && !trovato; ++j)
+        {
+            auto ptr = board[i][j];
+            if (!(ptr == nullptr) && (*ptr).getIsWhite() == white && dynamic_cast<Re *>(&(*ptr)))
+            {
+                trovato = true;
+                kingpos.first = i;
+                kingpos.second = j;
+            }
+        }
+    }
+    auto v = getMosseGiocatore(!white, false);
+    for(int i = 0; i < v.size(); ++i)
+    {
+        if(kingpos == v[i])
+            return true;
+    }
+    return false;
+}
+#include <iostream>
+
+Vector<std::pair<int, int>> Scacchiera::controllaMosse(int row, int col, const Vector<std::pair<int, int>> &mosse)
+{
+    static int calls = 0;
+    std::cout << "pog " << calls++ << std::endl;
+    Vector<std::pair<int, int>> ret;
+    Vector<Vector<DeepPtr<Pezzo>>> temp;
+    for(int i = 0; i < mosse.size(); ++i)
+    {
+        temp = board;
+        board[mosse[i].first][mosse[i].second] = board[row][col];
+        board[row][col] = nullptr;
+        if(!sottoScacco((*temp[row][col]).getIsWhite()))
+        {
+            ret.pushBack(mosse[i]);
+        }
+        board = temp;
+    }
+
     return ret;
 }
 

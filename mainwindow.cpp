@@ -8,6 +8,7 @@
 #include "QDir"
 #include <QFileDialog>
 #include "QTextStream"
+#include <sstream>
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
    ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
@@ -171,12 +172,27 @@ void MainWindow::handleMove(int x)
         }
         if(trovato)
         {
-            if(!model->getTurnWhite()) model->increaseMossa();
-            model->move(*firstClick, std::pair<int, int>(row, col));
+            Model::STATE res;
+            res = model->move(*firstClick, std::pair<int, int>(row, col));
             segnaMossa(firstClick->first, firstClick->second, row, col);
             delete firstClick;
             firstClick = nullptr;
             refreshPezzi();
+            switch(res)
+            {
+                case Model::PATTA:
+                    std::cout << "PATTA" << std::endl;
+                    break;
+                case Model::BIANCO:
+                    std::cout << "Vince BIANCO" << std::endl;
+                    break;
+                case Model::NERO:
+                    std::cout << "Vince NERO" << std::endl;
+                    break;
+                default:
+                    std::cout << res << std::endl;
+                    break;
+             }
         }
         else
         {
@@ -257,7 +273,27 @@ void MainWindow::carica(){
     ricomincia();
     ui->plainTextEdit->setPlainText(gamestring.c_str());
 
-
+    std::stringstream ss(gamestring);
+    std::string nmoveS;
+    std::string whiteMove;
+    std::string blackMove;
+    /*
+    std::cout << nmoveS << std::endl;
+    std::cout << whiteMove << std::endl;
+    std::cout << blackMove << std::endl;
+    */
+    while(!ss.eof())
+    {
+        ss >> nmoveS;
+        ss >> whiteMove;
+        model->move(std::pair<int, int>(whiteMove[1] - '1', whiteMove[0] - 'a'), std::pair<int, int>(whiteMove[3] - '1', whiteMove[2] - 'a'));
+        if(!ss.eof())
+        {
+            ss >> blackMove;
+            model->move(std::pair<int, int>(blackMove[1] - '1', blackMove[0] - 'a'), std::pair<int, int>(blackMove[3] - '1', blackMove[2] - 'a'));
+        }
+    }
+    /*
     for(auto i = gamestring.begin(); i != gamestring.end(); ++i){
         if(*i == static_cast<char>(model->getnMossa() + '0') && *(i+1) == '.' && *(i+2) == ' '){
             model->move(std::pair<int,int>(*(i+4) - '1',*(i+3) - 'a'), std::pair<int,int>(*(i+6) - '1', *(i+5)- 'a'));
@@ -268,9 +304,9 @@ void MainWindow::carica(){
                 model->increaseMossa();
             }
         }
-    }
-    refreshPezzi();
+    }*/
 
+    refreshPezzi();
 }
 
 void MainWindow::salva(){

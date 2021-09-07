@@ -1,5 +1,5 @@
 #include "model.h"
-
+#include "pedone.h"
 Model::Model(): s(new Scacchiera)
 {
 
@@ -15,6 +15,7 @@ void Model::init()
     s->reset();
     turnWhite = true;
     nMossa = 1;
+    regola50 = 0;
 }
 
 Vector<Repr> Model::getBoardRepr() const
@@ -22,7 +23,7 @@ Vector<Repr> Model::getBoardRepr() const
     return s->getRepresentation();
 }
 
-bool Model::move(const std::pair<int, int> &src, const std::pair<int, int> &dest)
+Model::STATE Model::move(const std::pair<int, int> &src, const std::pair<int, int> &dest)
 {
     DeepPtr<Pezzo> ptr = s->getPezzo(src.first, src.second);
 
@@ -36,18 +37,43 @@ bool Model::move(const std::pair<int, int> &src, const std::pair<int, int> &dest
         }
         if(trovato)
         {
-            s->move(src, dest);
+            ++regola50;
+            if(dynamic_cast<Pedone *>(&(*ptr)) || !(s->getPezzo(dest.first, dest.second) == nullptr))
+            {
+                regola50 = 0;
+            }
+            s->move(src, dest); 
             turnWhite = !turnWhite;
-            return true;
+            if(turnWhite)
+            {
+                increaseMossa();
+            }
+            if(regola50 >= 50 || s->getStallo(turnWhite))
+            {
+                return PATTA;
+            }
+            if(s->getScaccoMatto(turnWhite))
+            {
+                if(turnWhite)
+                {
+                    return NERO;
+                }
+                else
+                {
+                    return BIANCO;
+                }
+            }
+
         }
     }
-    return false;
+    return CONTINUA;
 }
 
 void Model::reset(){
     s->reset();
     turnWhite = true;
     nMossa = 1;
+    regola50 = 0;
 }
 
 Vector<std::pair<int, int>> Model::getPieceMoves(int row, int col) const

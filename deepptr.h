@@ -14,7 +14,7 @@ public:
     DeepPtr & operator=(const DeepPtr &o);
 
     T & operator*() const;
-    bool operator==(const DeepPtr &o);
+    bool operator==(const DeepPtr &o) const;
 private:
     T *ptr;
 };
@@ -59,7 +59,7 @@ T & DeepPtr<T>::operator*() const
 }
 
 template <class T>
-bool DeepPtr<T>::operator==(const DeepPtr<T> &o)
+bool DeepPtr<T>::operator==(const DeepPtr<T> &o) const
 {
     return ptr == o.ptr;
 }
