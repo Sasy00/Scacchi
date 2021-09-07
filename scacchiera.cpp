@@ -261,11 +261,17 @@ Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white, bool serve
 {
     Vector<std::pair<int, int>> ret;
     DeepPtr<Pezzo> ptr;
+    //int i = 0, j = 0;
+
+    //for(auto it = board.begin(); it != board.end(); ++it)
     for(int i = 0; i < 8; ++i)
     {
+        //j = 0;
+        //for(auto ip = board[it].begin(); ip != board[it].end(); ++ip)
         for(int j = 0; j < 8; ++j)
         {
             ptr = board[i][j];
+            //ptr = board[it][ip];
             if(!(ptr == nullptr))
             {
                 if((*ptr).getIsWhite() == white)
@@ -276,7 +282,9 @@ Vector<std::pair<int, int>> Scacchiera::getMosseGiocatore(bool white, bool serve
                         ret += (*ptr).canMove(i, j);
                 }
             }
+            //++j;
         }
+        //++i;
     }
     return ret;
 }
@@ -302,9 +310,11 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(whiteKingCastle && (board[0][5] == nullptr) && (board[0][6] == nullptr)) //se può fare arroco corto e f1 e g1 sono libere
                     {
                         bool minaccia = false;
-                        for(int i = 0; i < v.size() && !minaccia; ++i)
+                        for(auto it = v.begin(); it != v.end(); ++it)
+                        //for(int i = 0; i < v.size() && !minaccia; ++i)
                         {
-                            std::pair<int, int> attack = v[i];
+                            std::pair<int, int> attack = *it;
+                            //std::pair<int, int> attack = v[i];
                             minaccia = (attack.first == 0 && attack.second == 5) || (attack.first == 0 && attack.second == 6); //minaccia == true sse almeno un pezzo nemico può andare lì
                         }
                         if(!minaccia)
@@ -336,9 +346,10 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(whiteQueenCastle && (board[0][1] == nullptr) && (board[0][2] == nullptr) && (board[0][3] == nullptr)) //se può fare arroco lungo e b1 e c1 e d1 sono libere
                     {
                         bool minaccia = false;
-                        for(int i = 0; i < v.size() && !minaccia; ++i)
+                        for(auto it = v.begin(); it != v.end(); ++it)
+                        //for(int i = 0; i < v.size() && !minaccia; ++i)
                         {
-                            minaccia = v[i].first == 0 && (v[i].second == 2 || v[i].second == 3); //minaccia == true sse almeno un pezzo nemico può andare lì
+                            minaccia = it->first == 0 && (it->second == 2 || it->second == 3); //minaccia == true sse almeno un pezzo nemico può andare lì
                         }
                         if(!minaccia)
                         {
@@ -375,9 +386,9 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(blackKingCastle && (board[7][5] == nullptr) && (board[7][6] == nullptr)) //se può fare arroco corto e f1 e g1 sono libere
                     {
                         bool minaccia = false;
-                        for(int i = 0; i < v.size() && !minaccia; ++i)
+                        for(auto it = v.begin(); it != v.end() && !minaccia; ++it)
                         {
-                            minaccia = v[i].first == 7 && (v[i].second == 5 || v[i].second == 6); //minaccia == true sse almeno un pezzo nemico può andare lì
+                            minaccia = it->first == 7 && (it->second == 5 || it->second == 6); //minaccia == true sse almeno un pezzo nemico può andare lì
                         }
                         if(!minaccia)
                         {
@@ -408,9 +419,9 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(blackQueenCastle && (board[7][1] == nullptr) && (board[7][2] == nullptr) && (board[7][3] == nullptr)) //se può fare arroco lungo e b1 e c1 e d1 sono libere
                     {
                         bool minaccia = false;
-                        for(int i = 0; i < v.size() && !minaccia; ++i)
+                        for(auto it = v.begin(); it != v.end() && !minaccia; ++it)
                         {
-                            minaccia = v[i].first == 7 && (v[i].second == 2 || v[i].second == 3); //minaccia == true sse almeno un pezzo nemico può andare lì
+                            minaccia = it->first == 7 && (it->second == 2 || it->second == 3); //minaccia == true sse almeno un pezzo nemico può andare lì
                         }
                         if(!minaccia)
                         {
@@ -478,9 +489,9 @@ bool Scacchiera::sottoScacco(bool white)
         }
     }
     auto v = getMosseGiocatore(!white, false);
-    for(int i = 0; i < v.size(); ++i)
+    for(auto it = v.begin(); it != v.end(); ++it)
     {
-        if(kingpos == v[i])
+        if(kingpos == *it)
             return true;
     }
     return false;
@@ -489,16 +500,18 @@ bool Scacchiera::sottoScacco(bool white)
 
 Vector<std::pair<int, int>> Scacchiera::controllaMosse(int row, int col, const Vector<std::pair<int, int>> &mosse)
 {
+    static int calls = 0;
+    std::cout << "pog " << calls++ << std::endl;
     Vector<std::pair<int, int>> ret;
     Vector<Vector<DeepPtr<Pezzo>>> temp;
-    for(int i = 0; i < mosse.size(); ++i)
+    for(auto it = mosse.begin(); it != mosse.end(); ++it)
     {
         temp = board;
-        board[mosse[i].first][mosse[i].second] = board[row][col];
+        board[it->first][it->second] = board[row][col];
         board[row][col] = nullptr;
         if(!sottoScacco((*temp[row][col]).getIsWhite()))
         {
-            ret.pushBack(mosse[i]);
+            ret.pushBack(*it);
         }
         board = temp;
     }

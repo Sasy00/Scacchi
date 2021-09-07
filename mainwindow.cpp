@@ -9,8 +9,6 @@
 #include <QFileDialog>
 #include "QTextStream"
 #include <sstream>
-#include <QStatusBar>
-
 MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWindow)
    ,mapper(new QSignalMapper(this)),model(new Model()), firstClick(nullptr)
 {
@@ -77,12 +75,12 @@ void MainWindow::refreshPezzi()
         }
     }
 
-    for(int i = 0; i < v.size(); ++i)
+    for(auto it = v.begin(); it != v.end(); ++it)
     {
-        char tipo = std::toupper(v[i].pezzo);
-        char colore = std::toupper(v[i].colore);
-        int row = v[i].pos.first;
-        int col = v[i].pos.second;
+        char tipo = std::toupper(it->pezzo);
+        char colore = std::toupper(it->colore);
+        int row = it->pos.first;
+        int col = it->pos.second;
         casella[row][col]->setPixmap(immagini[getImageIndex(colore,tipo)].scaled(dim-red,dim-red,Qt::KeepAspectRatio,Qt::SmoothTransformation));
         casella[row][col]->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
     }
@@ -157,9 +155,9 @@ void MainWindow::handleMove(int x)
         if(moves.size() != 0)
         {
             firstClick = new std::pair<int, int>(row, col);
-            for(int i = 0; i < moves.size(); ++i)
+            for(auto it = moves.begin(); it != moves.end(); ++it)
             {
-                casella[moves[i].first][moves[i].second]->setStyleSheet("QLabel { background-color : red}");
+                casella[it->first][it->second]->setStyleSheet("QLabel { background-color : red}");
             }
         }
     }
@@ -168,9 +166,9 @@ void MainWindow::handleMove(int x)
 
         bool trovato = false;
         Vector<std::pair<int, int>> oldPieceMoves = model->getPieceMoves(firstClick->first, firstClick->second);
-        for(int i = 0; i < oldPieceMoves.size() && !trovato; ++i)
+        for(auto it = oldPieceMoves.begin(); it != oldPieceMoves.end() && !trovato; ++it)
         {
-            trovato = oldPieceMoves[i] == std::pair<int, int>(row, col);
+            trovato = oldPieceMoves[it] == std::pair<int, int>(row, col);
         }
         if(trovato)
         {
@@ -183,36 +181,35 @@ void MainWindow::handleMove(int x)
             switch(res)
             {
                 case Model::PATTA:
-                    ui->fondotesto->setText("La partita è PATTA!");
+                    std::cout << "PATTA" << std::endl;
                     break;
                 case Model::BIANCO:
-                    ui->fondotesto->setText("Vince il BIANCO!");
+                    std::cout << "Vince BIANCO" << std::endl;
                     break;
                 case Model::NERO:
-                    ui->fondotesto->setText("Vince il NERO!");
+                    std::cout << "Vince NERO" << std::endl;
                     break;
                 default:
+                    std::cout << res << std::endl;
                     break;
              }
         }
         else
         {
-
+            /*
             if(model->getPieceMoves(row, col).size() > 0)
             {
                 delete firstClick;
-                firstClick = nullptr;
-                handleMove(x);
+                firstClick = new std::pair<int, int>(row, col);
             }
             else
             {
                 delete firstClick;
                 firstClick = nullptr;
             }
-            /*
+            */
             delete firstClick;
             firstClick = nullptr;
-            */
         }
     }
 
@@ -229,8 +226,8 @@ void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
         s.append(char((m1+1)+'0'));
         s.append(char(m4+'a'));
         s.append(char((m3+1)+'0'));
+        //if(ui->plainTextEdit->)
         ui->plainTextEdit->insertPlainText(s);
-        ui->fondotesto->setText("Tocca al Nero");
     }
     else{
         s.append(' ');
@@ -240,7 +237,6 @@ void MainWindow::segnaMossa(int m1, int m2, int m3, int m4){
         s.append(char((m3+1)+'0'));
         s.append('\n');
         ui->plainTextEdit->insertPlainText(s);
-        ui->fondotesto->setText("Tocca al Bianco");
     }
 
 
@@ -264,7 +260,7 @@ void MainWindow::resetColors()
 }
 
 void MainWindow::carica(){
-    QString filename = QFileDialog::getOpenFileName(this,tr("Carica Partita"),"", tr("Partita (*.LPGN)"));
+    QString filename = QFileDialog::getOpenFileName(this,tr("Carica Partita"), tr("*.txt"));
     QFile file(filename);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return;
@@ -273,17 +269,19 @@ void MainWindow::carica(){
         gamestring = file.readAll().toStdString();
     }
     file.close();
-    if(gamestring.size() < 7)
-        return;
-    ricomincia();
 
+    ricomincia();
     ui->plainTextEdit->setPlainText(gamestring.c_str());
 
     std::stringstream ss(gamestring);
     std::string nmoveS;
     std::string whiteMove;
     std::string blackMove;
-
+    /*
+    std::cout << nmoveS << std::endl;
+    std::cout << whiteMove << std::endl;
+    std::cout << blackMove << std::endl;
+    */
     while(!ss.eof())
     {
         ss >> nmoveS;
@@ -295,11 +293,24 @@ void MainWindow::carica(){
             model->move(std::pair<int, int>(blackMove[1] - '1', blackMove[0] - 'a'), std::pair<int, int>(blackMove[3] - '1', blackMove[2] - 'a'));
         }
     }
+    /*
+    for(auto i = gamestring.begin(); i != gamestring.end(); ++i){
+        if(*i == static_cast<char>(model->getnMossa() + '0') && *(i+1) == '.' && *(i+2) == ' '){
+            model->move(std::pair<int,int>(*(i+4) - '1',*(i+3) - 'a'), std::pair<int,int>(*(i+6) - '1', *(i+5)- 'a'));
+            i+=6;
+            if(i+1 != gamestring.end() && *(i+1) != '\n'){
+                i++;
+                model->move(std::pair<int,int>(*(i+2)- '1',*(i+1)- 'a'), std::pair<int,int>(*(i+4)- '1',*(i+3)- 'a'));
+                model->increaseMossa();
+            }
+        }
+    }*/
+
     refreshPezzi();
 }
 
 void MainWindow::salva(){
-    QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), "", tr("Partita (*.LPGN)"));
+    QString filename = QFileDialog::getSaveFileName(this,tr("Salva Partita"), tr("*.txt"));
     QFile file(filename);
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
         return;

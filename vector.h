@@ -11,8 +11,21 @@ public:
      */
     class Iterator
     {
-
+        friend class Vector;
+    public:
+        bool operator==(const Iterator &it) const;
+        bool operator!=(const Iterator &it) const;
+        Iterator & operator++();        //++ prefix
+        Iterator operator++(int);     //++ postfix
+        T * operator->() const;
+        T & operator*() const;
+    private:
+        T *ptr;
     };
+
+    Iterator begin() const;
+    Iterator end() const;
+    T & operator[](const Iterator &) const;
 
     Vector(int x = 10);
     Vector(int x, const T &o);
@@ -200,6 +213,68 @@ Vector<T> & Vector<T>::operator+=(const Vector &o)
         pushBack(o[i]);
     }
     return *this;
+}
+
+template<class T>
+bool Vector<T>::Iterator::operator==(const Iterator &it) const
+{
+
+    return ptr == it.ptr;
+}
+
+template<class T>
+bool Vector<T>::Iterator::operator!=(const Iterator &it) const
+{
+    return ptr != it.ptr;
+}
+
+template<class T>
+typename Vector<T>::Iterator & Vector<T>::Iterator::operator++()       //++ prefix
+{
+    ++ptr;
+    return *this;
+}
+
+template<class T>
+typename Vector<T>::Iterator Vector<T>::Iterator::operator++(int)       //++ postfix
+{
+    Iterator aux = *this;
+    ++ptr;
+    return aux;
+}
+
+template<class T>
+T * Vector<T>::Iterator::operator->() const
+{
+    return ptr;
+}
+
+template<class T>
+T & Vector<T>::Iterator::operator*() const
+{
+    return *ptr;
+}
+
+template<class T>
+T & Vector<T>::operator[](const Vector<T>::Iterator &it) const
+{
+    return *it;
+}
+
+template<class T>
+typename Vector<T>::Iterator Vector<T>::begin() const
+{
+    Iterator aux;
+    aux.ptr = _arr;
+    return aux;
+}
+
+template<class T>
+typename Vector<T>::Iterator Vector<T>::end() const
+{
+    Iterator aux;
+    aux.ptr = &_arr[_size];
+    return aux;
 }
 
 #endif // VECTOR_H

@@ -6,42 +6,9 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>850</width>
-    <height>650</height>
+    <width>979</width>
+    <height>654</height>
    </rect>
-  </property>
-  <property name="sizePolicy">
-   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-    <horstretch>0</horstretch>
-    <verstretch>0</verstretch>
-   </sizepolicy>
-  </property>
-  <property name="minimumSize">
-   <size>
-    <width>850</width>
-    <height>650</height>
-   </size>
-  </property>
-  <property name="maximumSize">
-   <size>
-    <width>850</width>
-    <height>650</height>
-   </size>
-  </property>
-  <property name="sizeIncrement">
-   <size>
-    <width>0</width>
-    <height>0</height>
-   </size>
-  </property>
-  <property name="baseSize">
-   <size>
-    <width>900</width>
-    <height>700</height>
-   </size>
-  </property>
-  <property name="acceptDrops">
-   <bool>false</bool>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -50,10 +17,10 @@
    <widget class="QPlainTextEdit" name="plainTextEdit">
     <property name="geometry">
      <rect>
-      <x>600</x>
-      <y>30</y>
+      <x>710</x>
+      <y>50</y>
       <width>211</width>
-      <height>521</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="font">
@@ -77,34 +44,13 @@
      <string notr="true"/>
     </property>
    </widget>
-   <widget class="QLabel" name="fondotesto">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>560</y>
-      <width>411</width>
-      <height>51</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <family>Helvetica</family>
-      <pointsize>30</pointsize>
-      <weight>75</weight>
-      <bold>true</bold>
-     </font>
-    </property>
-    <property name="text">
-     <string>Tocca al Bianco</string>
-    </property>
-   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>850</width>
+     <width>979</width>
      <height>20</height>
     </rect>
    </property>
