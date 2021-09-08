@@ -310,7 +310,7 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(whiteKingCastle && (board[0][5] == nullptr) && (board[0][6] == nullptr)) //se può fare arroco corto e f1 e g1 sono libere
                     {
                         bool minaccia = false;
-                        for(auto it = v.begin(); it != v.end(); ++it)
+                        for(auto it = v.begin(); it != v.end() && !minaccia; ++it)
                         //for(int i = 0; i < v.size() && !minaccia; ++i)
                         {
                             std::pair<int, int> attack = *it;
@@ -346,7 +346,7 @@ Vector<std::pair<int, int>> Scacchiera::getPieceMoves(int row, int col)
                     if(whiteQueenCastle && (board[0][1] == nullptr) && (board[0][2] == nullptr) && (board[0][3] == nullptr)) //se può fare arroco lungo e b1 e c1 e d1 sono libere
                     {
                         bool minaccia = false;
-                        for(auto it = v.begin(); it != v.end(); ++it)
+                        for(auto it = v.begin(); it != v.end() && !minaccia; ++it)
                         //for(int i = 0; i < v.size() && !minaccia; ++i)
                         {
                             minaccia = it->first == 0 && (it->second == 2 || it->second == 3); //minaccia == true sse almeno un pezzo nemico può andare lì
