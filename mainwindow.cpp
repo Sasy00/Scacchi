@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent): QMainWindow(parent), ui(new Ui::MainWin
     caricaImmagini();
     creaScacchiera();
     ui->plainTextEdit->setPlainText("");
+    setWindowTitle("Scacchi");
 }
 
 MainWindow::~MainWindow()
